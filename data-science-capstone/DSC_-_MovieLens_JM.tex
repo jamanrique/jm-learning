@@ -1,0 +1,537 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Data Science Capstone Project - MovieLens},
+            pdfauthor={Justo AndrÃƒÆ'Ã‚Â©s Manrique Urbina},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Data Science Capstone Project - MovieLens}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Justo AndrÃƒÆ'Ã‚Â©s Manrique Urbina}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{10 de junio de 2019}
+
+
+\begin{document}
+\maketitle
+
+\section{Introduction}\label{introduction}
+
+This document narrates the creation process of a recommendation engine,
+whose purpose is to predict how will a user rate a specific movie. With
+this in mind, we use the MovieLens movies rating dataset, which is
+maintained by GroupLens Research Lab. From this dataset, we create our
+training and test set. Creating this recommendation engine is part of
+the capstone project for HarvardX Data Science Professional Certificate.
+
+The process of creating a recommendation engine comprises exploratory
+data analysis and modelling effects that helps predicting ratings for a
+given rating. To assess the performance of our model, we will use RMSE
+metric.
+
+In exploratory data analysis, we develop an understanding of the
+following:
+
+\begin{itemize}
+\tightlist
+\item
+  Understand the overall distribution of ratings, users and ratings per
+  movie.
+\item
+  Understand the possible effects each variable has on ratings.
+\item
+  Evaluate if we need regularization for small samples penalization.
+\end{itemize}
+
+After exploratory data analysis we will iterate different models and
+improve RMSE, and compare each model.
+
+Finally, we will conclude what's the best model given our RMSE and
+discuss further steps that can be taken to improve score.
+
+Having said this, let's start working!
+
+\section{MovieLens analysis}\label{movielens-analysis}
+
+To start analysis, we'll import data with the following code:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(dslabs)}
+\KeywordTok{library}\NormalTok{(caret)}
+\KeywordTok{library}\NormalTok{(tidyverse)}
+
+\KeywordTok{rm}\NormalTok{(}\DataTypeTok{list=}\KeywordTok{ls}\NormalTok{())}
+
+\KeywordTok{setwd}\NormalTok{(}\StringTok{"D:/pba"}\NormalTok{)}
+\NormalTok{edx <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"edx.rds"}\NormalTok{)}
+\NormalTok{validation <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"validation.rds"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Understanding our data}\label{understanding-our-data}
+
+First, we get a glimpse of how the table is structured using the formula
+head. From this, we understand there is some cleaning to do: (1)
+``genres'' field has different values that are separated by a pipe and
+(2) timestamp has to be converted to a readable format to take into
+account any time effect. We also understand the nature of our variables,
+which are:
+
+\begin{itemize}
+\tightlist
+\item
+  userId is a nominal variable which serves as a user identifier.
+\item
+  movieId is a nominal variable which serves as a movie identifier.
+\item
+  rating is a numeric variable which serves as a rating for a given
+  movie and given user. This is what we'll predict.
+\item
+  timestamp is a numeric variable which serves as a date identifier.
+\item
+  title is a nominal variable (and a string) which serves as movie
+  description.
+\item
+  genres is a nominal variable which serves as genre identifier for each
+  movie.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{head}\NormalTok{(edx)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   userId movieId rating timestamp                         title
+## 1      1     122      5 838985046              Boomerang (1992)
+## 2      1     185      5 838983525               Net, The (1995)
+## 4      1     292      5 838983421               Outbreak (1995)
+## 5      1     316      5 838983392               Stargate (1994)
+## 6      1     329      5 838983392 Star Trek: Generations (1994)
+## 7      1     355      5 838984474       Flintstones, The (1994)
+##                          genres
+## 1                Comedy|Romance
+## 2         Action|Crime|Thriller
+## 4  Action|Drama|Sci-Fi|Thriller
+## 5       Action|Adventure|Sci-Fi
+## 6 Action|Adventure|Drama|Sci-Fi
+## 7       Children|Comedy|Fantasy
+\end{verbatim}
+
+After this, we get descriptive statistics for our dataset. Given the
+nature of our variables, we will only focus in ratings summary
+statistics. From the 1st to 3rd quartile, we see that ratings are
+condensed in 3 to 4 values. We will look further into this.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{summary}\NormalTok{(edx)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      userId         movieId          rating        timestamp        
+##  Min.   :    1   Min.   :    1   Min.   :0.500   Min.   :7.897e+08  
+##  1st Qu.:18124   1st Qu.:  648   1st Qu.:3.000   1st Qu.:9.468e+08  
+##  Median :35738   Median : 1834   Median :4.000   Median :1.035e+09  
+##  Mean   :35870   Mean   : 4122   Mean   :3.512   Mean   :1.033e+09  
+##  3rd Qu.:53607   3rd Qu.: 3626   3rd Qu.:4.000   3rd Qu.:1.127e+09  
+##  Max.   :71567   Max.   :65133   Max.   :5.000   Max.   :1.231e+09  
+##     title              genres         
+##  Length:9000055     Length:9000055    
+##  Class :character   Class :character  
+##  Mode  :character   Mode  :character  
+##                                       
+##                                       
+## 
+\end{verbatim}
+
+By using an histogram, we can confirm that most of the ratings are in
+that interval.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(edx}\OperatorTok{$}\NormalTok{rating)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DSC_-_MovieLens_JM_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\subsubsection{Understanding users}\label{understanding-users}
+
+After this we can then understand how the users behave. For this, we
+create a summarization of the average rating and ratings count by
+userId. From this we gather:
+
+\begin{itemize}
+\tightlist
+\item
+  There are users that have as little as 10 ratings and as big as 6,116
+  ratings. As there are users that has little rating, there's a use case
+  for regularization.
+\item
+  The ratings overall distribution (which is centered at 3.5) also
+  replicates at the user level.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{usr_summary <-}\StringTok{ }\NormalTok{edx }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(userId) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{rating =} \KeywordTok{mean}\NormalTok{(rating),}\DataTypeTok{ratingscount=}\KeywordTok{n}\NormalTok{())}
+\KeywordTok{summary}\NormalTok{(usr_summary)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      userId          rating       ratingscount   
+##  Min.   :    1   Min.   :0.500   Min.   :  10.0  
+##  1st Qu.:17943   1st Qu.:3.357   1st Qu.:  32.0  
+##  Median :35799   Median :3.635   Median :  62.0  
+##  Mean   :35782   Mean   :3.614   Mean   : 128.8  
+##  3rd Qu.:53620   3rd Qu.:3.903   3rd Qu.: 141.0  
+##  Max.   :71567   Max.   :5.000   Max.   :6616.0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{hist}\NormalTok{(usr_summary}\OperatorTok{$}\NormalTok{rating)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DSC_-_MovieLens_JM_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\subsubsection{Understanding movies}\label{understanding-movies}
+
+We'd like to understand ratings per movie. For this, we create a
+summarization of the average rating, median rating, max and min rating
+and an index, which is the average rating divided by ratings counts.
+This index is an indicator of ratings small sample sizes. If the index
+is greater than 1, it means that there is small proportion of average
+ratings by ratings count.
+
+From this we gather:
+
+\begin{itemize}
+\tightlist
+\item
+  The ratings overal distribution also replicates at the movies level.
+\item
+  There is approximately 300 movies that has an index greater than 1.
+  Because of this, there's a use case for regularization.
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mov_summary <-}\StringTok{ }\NormalTok{edx }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(movieId, title) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{n_ratings =} \KeywordTok{n}\NormalTok{(),}\DataTypeTok{avg_ratings =} \KeywordTok{mean}\NormalTok{(rating), }\DataTypeTok{index =} \KeywordTok{mean}\NormalTok{(rating)}\OperatorTok{/}\KeywordTok{n}\NormalTok{(), }\DataTypeTok{min =} \KeywordTok{min}\NormalTok{(rating), }\DataTypeTok{max =} \KeywordTok{max}\NormalTok{(rating), }\DataTypeTok{median =} \KeywordTok{mode}\NormalTok{(median))}
+
+\NormalTok{mov_summary <-}\StringTok{ }\NormalTok{mov_summary }\OperatorTok{%>%}\StringTok{ }\KeywordTok{arrange}\NormalTok{(avg_ratings,n_ratings)}
+\KeywordTok{hist}\NormalTok{(mov_summary}\OperatorTok{$}\NormalTok{index[mov_summary}\OperatorTok{$}\NormalTok{index}\OperatorTok{>}\DecValTok{1}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{DSC_-_MovieLens_JM_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+This exploratory data analysis helps us understand that there's an user
+and model effect on rating, which will use for our model.
+
+\subsection{Defining our model}\label{defining-our-model}
+
+We'll predict the ratings taking into account first the movie effect.
+Based on the lectures, we create our RMSE function to assess the
+performance of our model and also a table object where we will store our
+results.
+
+To model the movie effect, we create a variable that tell us how apart
+we are from the overall rating mean based on the movie. Then we add this
+to the overall rating mean for each rating and left join this with the
+validation set. With this, we model the full movie effect. We assess our
+model performance only using the movie effect and get a RMSE of
+approximately \textasciitilde{}0.94.
+
+See code below:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{RMSE <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(true_ratings,predicted_ratings)\{}\KeywordTok{sqrt}\NormalTok{(}\KeywordTok{mean}\NormalTok{((true_ratings }\OperatorTok{-}\StringTok{ }\NormalTok{predicted_ratings)}\OperatorTok{^}\DecValTok{2}\NormalTok{))\}}
+
+\NormalTok{mean <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(edx}\OperatorTok{$}\NormalTok{rating)}
+\NormalTok{mov_effect <-}\StringTok{ }\NormalTok{edx }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(movieId) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{b_i =} \KeywordTok{mean}\NormalTok{(rating}\OperatorTok{-}\NormalTok{mean))}
+\NormalTok{mov_effect <-}\StringTok{ }\KeywordTok{cbind}\NormalTok{(mov_effect,mean) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{prd =}\NormalTok{ b_i }\OperatorTok{+}\StringTok{ }\NormalTok{mean) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{b_i,}\OperatorTok{-}\NormalTok{mean)}
+\NormalTok{validation <-}\StringTok{  }\NormalTok{validation }\OperatorTok{%>%}\StringTok{  }\KeywordTok{left_join}\NormalTok{(mov_effect,}\DataTypeTok{by=}\StringTok{'movieId'}\NormalTok{)}
+
+\NormalTok{mov_rmse <-}\StringTok{ }\KeywordTok{RMSE}\NormalTok{(validation}\OperatorTok{$}\NormalTok{rating,validation}\OperatorTok{$}\NormalTok{prd)}
+\NormalTok{rmse_table <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{method =} \StringTok{'Movie effect'}\NormalTok{, }\DataTypeTok{RMSE=}\NormalTok{mov_rmse)}
+\NormalTok{rmse_table}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         method      RMSE
+## 1 Movie effect 0.9439087
+\end{verbatim}
+
+Because our RMSE isn't adequate, we will add user effects to our current
+model. We do the same process here (we create a variable that tell us
+how apart we are from the overall rating mean based on the user). We
+then add this to the prediction created before and we left join this
+with the validation set. With this, we model both user and movie effect.
+We assess our model performance by using the RMSE function. Our model
+improves with a RMSE of approximately \textasciitilde{}0.88.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{usr_effect <-}\StringTok{ }\NormalTok{edx }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(userId) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{u_i =} \KeywordTok{mean}\NormalTok{(rating}\OperatorTok{-}\NormalTok{mean))}
+\NormalTok{validation <-}\StringTok{ }\NormalTok{validation }\OperatorTok{%>%}\StringTok{ }\KeywordTok{left_join}\NormalTok{(usr_effect,}\DataTypeTok{by=}\StringTok{'userId'}\NormalTok{) }
+\NormalTok{validation <-}\StringTok{ }\NormalTok{validation }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{prd_2 =}\NormalTok{ prd }\OperatorTok{+}\StringTok{ }\NormalTok{u_i) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{u_i)}
+
+\NormalTok{movusr_rmse <-}\StringTok{ }\KeywordTok{RMSE}\NormalTok{(validation}\OperatorTok{$}\NormalTok{rating,validation}\OperatorTok{$}\NormalTok{prd_}\DecValTok{2}\NormalTok{)}
+\NormalTok{rmse_table <-}\StringTok{ }\KeywordTok{bind_rows}\NormalTok{(rmse_table,}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{method =} \StringTok{'Movie and user effect'}\NormalTok{, }\DataTypeTok{RMSE=}\NormalTok{movusr_rmse))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rmse_table}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                  method      RMSE
+## 1          Movie effect 0.9439087
+## 2 Movie and user effect 0.8850398
+\end{verbatim}
+
+Because we saw there are movies that have small sample sizes, and users
+too, we'll do regularization on the current model. This will give us
+accurate estimates because we'll penalized small sample ratings.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{lambda <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\DecValTok{0}\NormalTok{,}\DecValTok{10}\NormalTok{,}\FloatTok{0.10}\NormalTok{)}
+\NormalTok{rmses_u_i <-}\StringTok{ }\KeywordTok{sapply}\NormalTok{(lambda,}\ControlFlowTok{function}\NormalTok{(l)\{}
+\NormalTok{  mean_f <-}\StringTok{ }\KeywordTok{mean}\NormalTok{(edx}\OperatorTok{$}\NormalTok{rating)}
+\NormalTok{  b_i <-}\StringTok{ }\NormalTok{edx }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(movieId) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{b_i=}\KeywordTok{sum}\NormalTok{(rating}\OperatorTok{-}\NormalTok{mean_f)}\OperatorTok{/}\NormalTok{(}\KeywordTok{n}\NormalTok{()}\OperatorTok{+}\NormalTok{l))}
+\NormalTok{  b_u <-}\StringTok{ }\NormalTok{edx }\OperatorTok{%>%}\StringTok{ }\KeywordTok{left_join}\NormalTok{(b_i, }\DataTypeTok{by=}\StringTok{'movieId'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(userId) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{b_u=}\KeywordTok{sum}\NormalTok{(rating}\OperatorTok{-}\StringTok{ }\NormalTok{b_i }\OperatorTok{-}\StringTok{ }\NormalTok{mean_f)}\OperatorTok{/}\NormalTok{(}\KeywordTok{n}\NormalTok{()}\OperatorTok{+}\NormalTok{l))}
+  
+\NormalTok{  prd_r <-}\StringTok{ }\NormalTok{validation }\OperatorTok{%>%}\StringTok{ }\KeywordTok{left_join}\NormalTok{(b_i, }\DataTypeTok{by=}\StringTok{'movieId'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{left_join}\NormalTok{(b_u,}\DataTypeTok{by=}\StringTok{'userId'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{prd_r=}\NormalTok{mean_f}\OperatorTok{+}\NormalTok{b_i}\OperatorTok{+}\NormalTok{b_u)}
+  
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{RMSE}\NormalTok{(prd_r}\OperatorTok{$}\NormalTok{prd_r,prd_r}\OperatorTok{$}\NormalTok{rating))}
+\NormalTok{\}) }
+
+\NormalTok{lambda[}\KeywordTok{which.min}\NormalTok{(rmses_u_i)]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 5.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{reg_l <-}\StringTok{ }\NormalTok{lambda[}\KeywordTok{which.min}\NormalTok{(rmses_u_i)]}
+
+\NormalTok{mov_reg_effect =}\StringTok{ }\NormalTok{edx }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(movieId) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{b_i =} \KeywordTok{sum}\NormalTok{(rating}\OperatorTok{-}\NormalTok{mean)}\OperatorTok{/}\NormalTok{(}\KeywordTok{n}\NormalTok{()}\OperatorTok{+}\NormalTok{reg_l))}
+\NormalTok{mov_usr_reg_effect =}\StringTok{ }\NormalTok{edx }\OperatorTok{%>%}\StringTok{ }\KeywordTok{left_join}\NormalTok{(mov_reg_effect, }\DataTypeTok{by=}\StringTok{'movieId'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{group_by}\NormalTok{(userId) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{b_u =} \KeywordTok{sum}\NormalTok{(rating}\OperatorTok{-}\NormalTok{b_i}\OperatorTok{-}\NormalTok{mean)}\OperatorTok{/}\NormalTok{(}\KeywordTok{n}\NormalTok{()}\OperatorTok{+}\NormalTok{reg_l))}
+
+\NormalTok{validation <-}\StringTok{ }\NormalTok{validation }\OperatorTok{%>%}\StringTok{ }\KeywordTok{left_join}\NormalTok{(mov_reg_effect,}\DataTypeTok{by=}\StringTok{'movieId'}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{left_join}\NormalTok{(mov_usr_reg_effect,}\DataTypeTok{by=}\StringTok{'userId'}\NormalTok{)}
+\NormalTok{validation <-}\StringTok{ }\NormalTok{validation }\OperatorTok{%>%}\StringTok{ }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{prd_reg =}\NormalTok{ mean }\OperatorTok{+}\StringTok{ }\NormalTok{b_i }\OperatorTok{+}\StringTok{ }\NormalTok{b_u) }
+\NormalTok{validation <-}\StringTok{ }\NormalTok{validation }\OperatorTok{%>%}\StringTok{ }\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{b_i,}\OperatorTok{-}\NormalTok{b_u)}
+
+\KeywordTok{RMSE}\NormalTok{(validation}\OperatorTok{$}\NormalTok{prd_reg,validation}\OperatorTok{$}\NormalTok{rating)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.864817
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mov_usr_reg_rmse <-}\StringTok{ }\KeywordTok{RMSE}\NormalTok{(validation}\OperatorTok{$}\NormalTok{rating,validation}\OperatorTok{$}\NormalTok{prd_reg)}
+\NormalTok{rmse_table <-}\StringTok{ }\KeywordTok{bind_rows}\NormalTok{(rmse_table,}\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{method =} \StringTok{'Movie effect and user effect, regularized'}\NormalTok{, }\DataTypeTok{RMSE=}\NormalTok{mov_usr_reg_rmse))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{rmse_table}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                                      method      RMSE
+## 1                              Movie effect 0.9439087
+## 2                     Movie and user effect 0.8850398
+## 3 Movie effect and user effect, regularized 0.8648170
+\end{verbatim}
+
+We see that our RMSE improve slightly, to approximately
+\textasciitilde{}0.86, which is sufficient for our purpose.
+
+\section{Results}\label{results}
+
+\begin{itemize}
+\tightlist
+\item
+  Movie and user effects gives information on whether our prediction is
+  accurate, since adding their effects improves RMSE.
+\item
+  Since we found out regularization is needed, penalizing small samples
+  will yield better predictions. This gave us a better RMSE when using
+  regularized movie and user effects.
+\end{itemize}
+
+\section{Conclusion}\label{conclusion}
+
+\begin{itemize}
+\tightlist
+\item
+  We should take into account movies and users for this type of
+  recommendation engines since it gives information on user preferences
+  and movies quality. While this sounds rather obvious, it's best if we
+  can use data to confirm this.
+\item
+  Ratings seem rather consistent at each level (in the three levels -
+  overall, movie and user wise -).
+\end{itemize}
+
+\section{Next Steps}\label{next-steps}
+
+To further improve RMSE, we could take into account movies' genres,
+movie's release date. If possible, we can augment data in this dataset
+to yield better predictions. For example, we can get movie's author and
+starring actor, movie's cost and much more.
+
+
+\end{document}

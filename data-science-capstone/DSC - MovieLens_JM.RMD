@@ -1,7 +1,7 @@
 ---
 title: "Data Science Capstone Project - MovieLens"
-author: "Justo Andrés Manrique Urbina"
-date: "7 de junio de 2019"
+author: "Justo AndrÃƒÆ’Ã‚Â©s Manrique Urbina"
+date: "10 de junio de 2019"
 output: pdf_document
 ---
 
@@ -38,7 +38,7 @@ library(tidyverse)
 
 rm(list=ls())
 
-setwd("C:/Users/Justo.Manrique/Documents/Capstone-HarvardX")
+setwd("D:/pba")
 edx <- readRDS("edx.rds")
 validation <- readRDS("validation.rds")
 
@@ -51,7 +51,7 @@ First, we get a glimpse of how the table is structured using the formula head. F
 * userId is a nominal variable which serves as a user identifier.
 * movieId is a nominal variable which serves as a movie identifier.
 * rating is a numeric variable which serves as a rating for a given movie and given user. This is what we'll predict.
-* timestamp is a numeric variable which servers as a date identifier.
+* timestamp is a numeric variable which serves as a date identifier.
 * title is a nominal variable (and a string) which serves as movie description.
 * genres is a nominal variable which serves as genre identifier for each movie.
 
