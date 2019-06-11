@@ -4,7 +4,7 @@ library(tidyverse)
 
 rm(list=ls())
 
-setwd("D:/pba")
+setwd("C:/Users/Justo.Manrique/Documents/Capstone-HarvardX")
 edx <- readRDS("edx.rds")
 validation <- readRDS("validation.rds")
 
@@ -17,21 +17,16 @@ hist(edx$rating)
 
 ## User analysis
 
-usr_summary <- edx %>% group_by(userId) %>% summarise(rating = mean(rating),ratingscount=n())
+usr_summary <- edx %>% group_by(userId) %>% summarise(rating = mean(rating),sd_rating=sd(rating),ratingscount=n())
 summary(usr_summary)
+hist(usr_summary$rating)
 
 ## Movie analysis
 
 mov_summary <- edx %>% group_by(movieId, title) %>% summarise(n_ratings = n(),avg_ratings = mean(rating), index = mean(rating)/n(), min = min(rating), max = max(rating), median = mode(median))
 
 mov_summary <- mov_summary %>% arrange(avg_ratings,n_ratings)
-
-## Genre analysis
-
-gen_analysis <- edx %>% separate_rows(genres, sep = "\\|")
-
-gen_summary <- gen_analysis %>% group_by(genres) %>% summarise(n_movies=n_distinct(movieId),avg_rating=mean(rating),ratingcount=n()) %>% arrange(n_movies)
-gen_summary
+hist(mov_summary$index)
 
 #### Modelling ####
 
@@ -58,6 +53,7 @@ validation <- validation %>% mutate(prd_2 = prd + u_i) %>% select(-u_i)
 # RMSE
 movusr_rmse <- RMSE(validation$rating,validation$prd_2)
 rmse_table <- bind_rows(rmse_table,data.frame(method = 'Movie and user effect', RMSE=movusr_rmse))
+rmse_table
 
 ## Start regularization
 
