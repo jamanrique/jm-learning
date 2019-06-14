@@ -1,6 +1,6 @@
 ---
 title: "Data Science Capstone Project - MovieLens"
-author: "Justo AndrÃƒÆ’Ã‚Â©s Manrique Urbina"
+author: "Justo Andrés Manrique Urbina"
 date: "10 de junio de 2019"
 output: pdf_document
 ---
@@ -38,7 +38,7 @@ library(tidyverse)
 
 rm(list=ls())
 
-setwd("D:/pba")
+setwd("C:/Users/Justo.Manrique/Documents/Capstone-HarvardX")
 edx <- readRDS("edx.rds")
 validation <- readRDS("validation.rds")
 

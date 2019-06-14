@@ -17,7 +17,7 @@ hist(edx$rating)
 
 ## User analysis
 
-usr_summary <- edx %>% group_by(userId) %>% summarise(rating = mean(rating),sd_rating=sd(rating),ratingscount=n())
+usr_summary <- edx %>% group_by(userId) %>% summarise(rating = mean(rating),ratingscount=n())
 summary(usr_summary)
 hist(usr_summary$rating)
 
@@ -26,7 +26,7 @@ hist(usr_summary$rating)
 mov_summary <- edx %>% group_by(movieId, title) %>% summarise(n_ratings = n(),avg_ratings = mean(rating), index = mean(rating)/n(), min = min(rating), max = max(rating), median = mode(median))
 
 mov_summary <- mov_summary %>% arrange(avg_ratings,n_ratings)
-hist(mov_summary$index)
+hist(mov_summary$index[mov_summary$index>1])
 
 #### Modelling ####
 
@@ -79,7 +79,7 @@ mov_usr_reg_effect = edx %>% left_join(mov_reg_effect, by='movieId') %>% group_b
 ## User and movie effect, regularized prediction
 validation <- validation %>% left_join(mov_reg_effect,by='movieId') %>% left_join(mov_usr_reg_effect,by='userId')
 validation <- validation %>% mutate(prd_reg = mean + b_i + b_u) 
-validation <- validation %>% select(-b_i,-b_u,-b_i.x,-b_i.y,-b_u.x,-b_u.y)
+validation <- validation %>% select(-b_i,-b_u)
 
 RMSE(validation$prd_reg,validation$rating)
 
