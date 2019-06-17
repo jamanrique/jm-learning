@@ -1,15 +1,11 @@
+
 ---
-output:
-  word_document: default
-  html_document: default
----
-*---
 title: 'Determining wine quality: A machine learning approach'
-author: "Justo AndrÃ©s Manrique Urbina"
+author: "Justo Andrés Manrique Urbina"
 date: "17 de junio de 2019"
 output:
-  word_document: default
   pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -24,7 +20,7 @@ This project has the following structure:
 
 * Exploratory Data Analysis: We'll understand the nature of our variables, the variable we want to predict and its relationship. 
 * Model Iteration: Given our performance metric, we'll compare different models and see which one is a better fit.
-** Results Discussion: We'll determine what model is best and what are the next steps to improve our prediction.
+* Results Discussion: We'll determine what model is best and what are the next steps to improve our prediction.
 
 Let's start working!
 
@@ -44,7 +40,7 @@ library(randomForest)
 
 rm(list=ls())
 set.seed(140)
-setwd("C:/Users/jaman/Documents/GitHub/jm-learning/data-science-cyo/data")
+setwd("C:/Users/Justo.Manrique/Documents/GitHub/jm-learning/data-science-cyo/data")
 
 ## Data loading 
 w_red <- read_delim("winequality-red.csv", ";", escape_double = FALSE, trim_ws = TRUE)
@@ -58,7 +54,7 @@ w_red_test = w_red[-index,]
 ```
 
 # Exploratory Data Analysis
-*
+
 Understanding data requires some special thought on what's the data structure and what does each data point represents. For this, we get a sense of our data structure by using formula glimple from dplyr package. After this, we understand data nature from the paper it's originated (http://www3.dsi.uminho.pt/pcortez/wine5.pdf, page 23). From this understanding, we get the following ideas:
 
 * All of our attributes are continuous.
@@ -108,7 +104,7 @@ For this regression task, we will use the following algorithms:
 * K nearest Neighbors
 * Random Forest
 
-We will evaluate this algorithms using RMSE loss function. The lower the RMSE is, the better the algorithm is. Each algorith will be cross-validated and fine tuned using caret package in R.
+We will evaluate this algorithms using RMSE loss function. The lower the RMSE is, the better the algorithm is. Each algorithm will be cross-validated and fine tuned using caret package in R.
 
 ## Decision Tree Algorithm
 
@@ -181,12 +177,13 @@ We see the following results using our random forest algorithm:
 
 # Results and conclusion
 
-* we applied different algorithms and evaluated its performance. From this evaluation, we've seen that the random forest algorithm performs better than the other two (0.58 vs. 0.64 and 0.68)
+* We applied different algorithms and evaluated its performance. From this evaluation, we've seen that the random forest algorithm performs better than the other two (0.58 vs. 0.64 and 0.68)
 * Our exploratory analysis helped used defining predictors: both decision trees algorithm to random forest took alcohol and sulphates as predictors of quality.
 
 # Next steps
 
 To further improve RMSE and get a better understanding of the data, we could augment information such as the following:
+
 * What were the weather conditions the grape went through before being converted into wine.
 * Type of production process the grape went.
 * What type of nutrients the company gave to the crops.
