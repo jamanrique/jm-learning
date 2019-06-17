@@ -1,0 +1,193 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+*---
+title: 'Determining wine quality: A machine learning approach'
+author: "Justo AndrÃ©s Manrique Urbina"
+date: "17 de junio de 2019"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+This document is the capstone project in the Data Science Professional Certificate program. As part of this program, we've been tasked to create our own project using a curated database. I've chosen a red wine quality database, which can be found in the following URL: https://archive.ics.uci.edu/ml/datasets/Wine+Quality. According to data description, this database is related to red variant of the Portuguese "Vinho Verde" wine. The purpose will give to this database is to predict the quality of a specific wine, given it's variables (we'll put more detail into this later).
+
+This project has the following structure:
+
+* Exploratory Data Analysis: We'll understand the nature of our variables, the variable we want to predict and its relationship. 
+* Model Iteration: Given our performance metric, we'll compare different models and see which one is a better fit.
+** Results Discussion: We'll determine what model is best and what are the next steps to improve our prediction.
+
+Let's start working!
+
+First, let's set up our environment. We'll load required libraries, set up working directory and do some minimal cleansing of data (clean the headers and creating training - test partition):
+
+```{r,message=FALSE}
+
+# Library Load
+
+library(tidyverse)
+library(caret)
+library(e1071)
+library(corrplot)
+library(randomForest)
+
+# Environment cleaning and seeding setting
+
+rm(list=ls())
+set.seed(140)
+setwd("C:/Users/jaman/Documents/GitHub/jm-learning/data-science-cyo/data")
+
+## Data loading 
+w_red <- read_delim("winequality-red.csv", ";", escape_double = FALSE, trim_ws = TRUE)
+colnames(w_red) <- make.names(colnames(w_red))
+
+## Creating partition
+index = createDataPartition(w_red$quality,times=1,p=0.75, list = F)
+w_red_train = w_red[index,]
+w_red_test = w_red[-index,]
+
+```
+
+# Exploratory Data Analysis
+*
+Understanding data requires some special thought on what's the data structure and what does each data point represents. For this, we get a sense of our data structure by using formula glimple from dplyr package. After this, we understand data nature from the paper it's originated (http://www3.dsi.uminho.pt/pcortez/wine5.pdf, page 23). From this understanding, we get the following ideas:
+
+* All of our attributes are continuous.
+* Not all variables have the same scale: sulfur dioxide variables are in milligrams, and the other ones are in grams.Due to this, we can see that these variables have bigger means and maximums than the other variables.
+* The variable 'quality', which is the variable we want to predict, can be treated or as a numeric or ordinal value. This means we can do a regression or classification model. We'll treat this variable as numeric.
+
+```{r}
+glimpse(w_red_train)
+summary(w_red_train)
+```
+
+Since all of our variables are numeric, we can do an correlogram plot to understand what's the relationship of variables. From this we gather:
+
+* Regarding Quality variable:
+  * We can see alcohol and volatile acidity as possible strong predictors since they have strong correlations with quality.
+  * We see that sulphates and citric acid are also linearly correlatd with quality.
+* We now look at the variables that are correlated with the possible predictors of quality. We see:
+  * Density has a inverse relationship with alcohol.
+  
+Based on this, we can use these variables for our set of predictors of quality.
+
+```{r}
+m = cor(w_red_train[,1:12])
+corrplot(m,method="number",type="upper")
+
+```
+
+We'd like to see now if there's a difference between the means of these predictors at each quality value. For this, we use the following summarization:
+
+```{r}
+w_red_train %>% group_by(quality) %>% summarise(count=n(),fsd = mean(free.sulfur.dioxide),tsd = mean(total.sulfur.dioxide),d=mean(density),ca=mean(citric.acid))
+```
+
+From this we gather:
+
+* Wines of higher quality has higher citric acid mean.
+* Wine of the lowest quality has the lowest both citric acid mean, lowest free and total sulfure dioxide mean.
+* There is small sample sizes of both low and high quality wine. We could have an unbalanced data problem.
+
+This exploratory data analysis helped us understanding how to define our predictors.
+
+# Model performance and selection
+
+For this regression task, we will use the following algorithms:
+
+* Decision Tree
+* K nearest Neighbors
+* Random Forest
+
+We will evaluate this algorithms using RMSE loss function. The lower the RMSE is, the better the algorithm is. Each algorith will be cross-validated and fine tuned using caret package in R.
+
+## Decision Tree Algorithm
+
+Our predictors for each algorithm will be: citric acid, volatile acidity, alcohol, sulphates and density. We run the following formula for our decision tree algorithm.
+
+```{r}
+
+# Defining our RMSE function
+
+RMSE <- function(true_ratings,predicted_ratings){sqrt(mean((true_ratings - predicted_ratings)^2))}
+
+# defining our cross-validation technique
+
+cv = trainControl(method='repeatedcv',number = 4,repeats=2)
+
+# CART Model
+
+cartmodel = train(quality ~ citric.acid + volatile.acidity + alcohol + sulphates + density, tuneLength=4,trControl=cv, data=w_red_train,method='rpart')
+
+cart_pr = predict(cartmodel,newdata = w_red_test)
+
+RMSE(cart_pr, w_red_test$quality)
+
+plot(cartmodel$finalModel)
+text(cartmodel$finalModel)
+
+```
+
+We see the following results using our decision tree algorithm:
+
+* Our RMSE is approximately 0.68.
+* The predictors this algorithm has used is alcohol and sulphates. Nevertheless the range of our predicted wine quality has reduced from 3-8 to 5-6.
+
+```{r}
+# KNN model
+
+knn = train(quality~citric.acid + volatile.acidity + alcohol + sulphates + density, w_red_train,method='knn')
+knn_pr = predict(knn,newdata=w_red_test)
+
+RMSE(knn_pr, w_red_test$quality)
+plot(knn)
+
+```
+
+We see the following results using our K nearest neighbors algorithm:
+
+* Our RMSE has improved slightly, it's now 0.64.
+* From the plot, we see that as we added more neighbors, the lower RMSE went (it's important to say that this could lead to overfitting).
+
+```{r}
+# Random Forest
+rf = train(quality~ citric.acid + volatile.acidity + alcohol + sulphates + density, w_red_train,method='rf',tuneLength=4,trControl=cv)
+ggplot(rf,highlight = TRUE)
+
+rf_pr = predict(rf, newdata = w_red_test)
+
+RMSE(rf_pr, w_red_test$quality)
+
+```
+
+```{r}
+## Understanding our final model
+varImpPlot(rf$finalModel)
+```
+
+We see the following results using our random forest algorithm:
+
+* We get a better RMSE: it's now 0.58.
+* In this algorithm, alcohol and volatile acidity are the most important predictors (in decision tree's algorithm it was alcohol and sulphates).
+
+# Results and conclusion
+
+* we applied different algorithms and evaluated its performance. From this evaluation, we've seen that the random forest algorithm performs better than the other two (0.58 vs. 0.64 and 0.68)
+* Our exploratory analysis helped used defining predictors: both decision trees algorithm to random forest took alcohol and sulphates as predictors of quality.
+
+# Next steps
+
+To further improve RMSE and get a better understanding of the data, we could augment information such as the following:
+* What were the weather conditions the grape went through before being converted into wine.
+* Type of production process the grape went.
+* What type of nutrients the company gave to the crops.
+* Have a bigger sample of low and high quality wine.
