@@ -4,6 +4,7 @@ library(tidyverse)
 library(caret)
 library(e1071)
 library(corrplot)
+library(randomForest)
 
 # Environment cleaning and seeding setting
 rm(list=ls())
