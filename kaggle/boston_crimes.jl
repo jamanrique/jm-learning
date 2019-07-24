@@ -11,5 +11,5 @@ sort!(crimes_master, :CODE)
 boston_cr = join(boston_cr,crimes_master, on = :OFFENSE_CODE => :CODE, kind = :left)
 
 # Creación de función summary, para conocer tipos de la variable
-summary(df) = hcat(names(df),eltypes(df),vec(convert(Matrix,first(boston_cr,1))))
-summary(boston_cr)
+glimpse(df) = hcat(names(df),eltypes(df),vec(convert(Matrix,first(boston_cr,1))))
+glimpse(boston_cr)
