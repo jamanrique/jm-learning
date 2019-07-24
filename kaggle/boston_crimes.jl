@@ -7,6 +7,7 @@ crimes_master = CSV.read("offense_codes.csv",copycols=true)
 unique!(crimes_master, :CODE)
 sort!(crimes_master, :CODE)
 
+# Unir boston_cr con crimes_master
 boston_cr = join(boston_cr,crimes_master, on = :OFFENSE_CODE => :CODE, kind = :left)
 
 # Creación de función summary, para conocer tipos de la variable
